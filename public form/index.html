@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Public Form</title>
+<style>
+    /* Basic styling for demo purposes */
+    form {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+    }
+    .error {
+        color: red;
+    }
+</style>
+</head>
+<body>
+    <form id="publicForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <span id="nameError" class="error"></span>
+
+        <label for="number">Number:</label>
+        <input type="text" id="number" name="number" required>
+        <span id="numberError" class="error"></span>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <span id="emailError" class="error"></span>
+
+        <label for="profile">Profile:</label>
+        <input type="text" id="profile" name="profile" required>
+        <span id="profileError" class="error"></span>
+
+        <label for="keySkills">Key Skills:</label>
+        <input type="text" id="keySkills" name="keySkills" required>
+        <span id="keySkillsError" class="error"></span>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+        <span id="locationError" class="error"></span>
+
+        <label for="resume">Resume Attachment:</label>
+        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+        <span id="resumeError" class="error"></span>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <script>
+        function submitForm() {
+            // Perform client-side validation
+            var name = document.getElementById('name').value.trim();
+            var number = document.getElementById('number').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var profile = document.getElementById('profile').value.trim();
+            var keySkills = document.getElementById('keySkills').value.trim();
+            var location = document.getElementById('location').value.trim();
+            var resume = document.getElementById('resume').files[0];
+
+            // Example validation (you should add more robust validation)
+            var isValid = true;
+            if (name === '') {
+                document.getElementById('nameError').textContent = 'Name is required.';
+                isValid = false;
+            } else {
+                document.getElementById('nameError').textContent = '';
+            }
+            // Add validation for other fields...
+
+            if (isValid) {
+                var formData = new FormData();
+                formData.append('name', name);
+                formData.append('number', number);
+                formData.append('email', email);
+                formData.append('profile', profile);
+                formData.append('keySkills', keySkills);
+                formData.append('location', location);
+                formData.append('resume', resume);
+
+                // Send form data to backend using fetch API
+                fetch('/submit_form', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Form submitted successfully!');
+                        document.getElementById('publicForm').reset();
+                    } else {
+                        alert('Failed to submit form.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting the form.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
